@@ -3,14 +3,22 @@ package com.tutorial.crudmongoback.CRUD.service;
 import com.tutorial.crudmongoback.CRUD.dto.ProductDto;
 import com.tutorial.crudmongoback.CRUD.entity.Product;
 import com.tutorial.crudmongoback.CRUD.repository.ProductRepository;
+import com.tutorial.crudmongoback.global.Entity.EntityId;
 import com.tutorial.crudmongoback.global.exceptions.AttributeException;
 import com.tutorial.crudmongoback.global.exceptions.ResourceNotFoundExceptions;
+import com.tutorial.crudmongoback.global.utils.Operations;
+import com.tutorial.crudmongoback.security.dto.UserDto;
+import com.tutorial.crudmongoback.security.entity.UserEntity;
+import com.tutorial.crudmongoback.security.enums.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -28,9 +36,9 @@ public class ProductService {
     public Product save(ProductDto productDto) throws AttributeException {
         if(productRepository.existsByName(productDto.getName()))
             throw new AttributeException("El nombre ya existe y no pueden haber duplicados");
-        int id=autoIncrement();
-        Product product=new Product(id,productDto.getName(),productDto.getPrice());
-        return productRepository.save(product);
+
+
+       return productRepository.save(mapProductFromDto(productDto));
     }
     public Product update(int id, ProductDto productDto) throws ResourceNotFoundExceptions, AttributeException {
         Product product=productRepository.findById(id).orElseThrow(()-> new ResourceNotFoundExceptions("No se encontró el producto con el id:" + id));
@@ -51,10 +59,11 @@ public class ProductService {
         }
         productRepository.deleteAll();
     }
-    private int autoIncrement(){
-        List<Product> products=productRepository.findAll();
-        //return products.isEmpty()?1: products.get(products.size()-1).getId()+1;
-        return products.isEmpty()?1:products.stream().max(Comparator.comparing(Product::getId)).get().getId()+1;
+    private Product mapProductFromDto(ProductDto productDto){
+        int id= Operations.autoIncrement(productRepository.findAll());
+        return new Product(id,productDto.getName(),productDto.getPrice());
+
     }
+
 
 }
