@@ -41,6 +41,7 @@ public class ProductController {
         String message="product "+product.getName()+" has been modified";
         return ResponseEntity.ok(new MessageDto(HttpStatus.OK,message));
     }
+
     @DeleteMapping
     public ResponseEntity<MessageDto> deleteAll() throws ResourceNotFoundExceptions {
         productService.deleteAll();

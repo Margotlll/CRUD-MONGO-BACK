@@ -7,6 +7,7 @@ import com.tutorial.crudmongoback.security.entity.UserEntity;
 import com.tutorial.crudmongoback.security.enums.RoleEnum;
 import com.tutorial.crudmongoback.security.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 public class UserService {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
     public List<UserEntity> getAll(){
         return userRepository.findAll();
     }
@@ -32,9 +35,10 @@ public class UserService {
     }
     private UserEntity mapUserFromDto(UserDto userDto){
         int id= Operations.autoIncrement(userRepository.findAll());
+        String password= passwordEncoder.encode(userDto.getPassword());
         //Convertir la Lista String del dto a tipo RolEnum
         List<RoleEnum> roles= userDto.getRoles().stream().map(rol -> RoleEnum.valueOf(rol)).collect(Collectors.toList());
-       return new UserEntity(id,userDto.getUsername(),userDto.getEmail(),userDto.getPassword(),roles);
+       return new UserEntity(id,userDto.getUsername(),userDto.getEmail(),password,roles);
 
     }
 
