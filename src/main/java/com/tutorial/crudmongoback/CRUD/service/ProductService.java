@@ -3,22 +3,13 @@ package com.tutorial.crudmongoback.CRUD.service;
 import com.tutorial.crudmongoback.CRUD.dto.ProductDto;
 import com.tutorial.crudmongoback.CRUD.entity.Product;
 import com.tutorial.crudmongoback.CRUD.repository.ProductRepository;
-import com.tutorial.crudmongoback.global.Entity.EntityId;
 import com.tutorial.crudmongoback.global.exceptions.AttributeException;
 import com.tutorial.crudmongoback.global.exceptions.ResourceNotFoundExceptions;
 import com.tutorial.crudmongoback.global.utils.Operations;
-import com.tutorial.crudmongoback.security.dto.UserDto;
-import com.tutorial.crudmongoback.security.entity.UserEntity;
-import com.tutorial.crudmongoback.security.enums.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.ResourceAccessException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {

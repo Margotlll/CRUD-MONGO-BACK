@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 
-public class UserDto {
+public class CreateUserDto {
     @NotBlank(message = "Name is mandatory")
     private String username;
     @NotBlank(message = "Email is mandatory")
@@ -18,10 +18,10 @@ public class UserDto {
     @NotEmpty(message = "role are mandatory")
     List<String> roles;
 
-    public UserDto() {
+    public CreateUserDto() {
     }
 
-    public UserDto(String username, String email, String password, List<String> roles) {
+    public CreateUserDto(String username, String email, String password, List<String> roles) {
         this.username = username;
         this.email = email;
         this.password = password;
