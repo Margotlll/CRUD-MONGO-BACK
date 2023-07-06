@@ -1,6 +1,6 @@
 package com.tutorial.crudmongoback.security.jwt;
 
-import com.tutorial.crudmongoback.security.service.UserDetailServiceImpl;
+import com.tutorial.crudmongoback.security.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +23,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     JwtProvider jwtProvider;
     @Autowired
-    UserDetailServiceImpl userDetailServiceImpl;
+    UserDetailsServiceImpl userDetailsServiceImpl;
     private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 
     @Override
@@ -31,8 +31,8 @@ public class JwtFilter extends OncePerRequestFilter {
         String token= getToken(req);
         try {
             if (token!=null && jwtProvider.validationToken(token)){
-                String username=jwtProvider.getUserNameFromToken(token);
-                UserDetails userDetails= userDetailServiceImpl.loadUserByUsername(username);
+                String username=jwtProvider.getUsernameFromToken(token);
+                UserDetails userDetails= userDetailsServiceImpl.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authenticationToken=
                         new UsernamePasswordAuthenticationToken(userDetails.getUsername(),null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);

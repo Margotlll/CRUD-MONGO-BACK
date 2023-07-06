@@ -3,8 +3,10 @@ package com.tutorial.crudmongoback.security.controller;
 import com.tutorial.crudmongoback.global.dto.MessageDto;
 import com.tutorial.crudmongoback.global.exceptions.AttributeException;
 import com.tutorial.crudmongoback.security.dto.CreateUserDto;
+import com.tutorial.crudmongoback.security.dto.JwtTokenDto;
+import com.tutorial.crudmongoback.security.dto.LoginUserDto;
 import com.tutorial.crudmongoback.security.entity.UserEntity;
-import com.tutorial.crudmongoback.security.service.UserService;
+import com.tutorial.crudmongoback.security.service.UserEntityService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,15 +18,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 
 @CrossOrigin //para ver en angular
-public class UserController {
+public class AuthController {
     @Autowired
-    UserService userService;
+    UserEntityService userEntityService;
     @PostMapping("/create")
     public ResponseEntity<MessageDto> save(@Valid @RequestBody CreateUserDto createUserDto) throws AttributeException {
        UserEntity userEntity;
-        userEntity = userService.create(createUserDto);
+        userEntity = userEntityService.create(createUserDto);
         String message="user "+userEntity.getUsername()+" has been saved";
         return ResponseEntity.ok(new MessageDto(HttpStatus.OK,message));
+
+    }
+    @PostMapping("/login")
+    public ResponseEntity<JwtTokenDto> login(@Valid @RequestBody LoginUserDto dto) throws AttributeException {
+        JwtTokenDto jwtTokenDto = userEntityService.login(dto);
+        return ResponseEntity.ok(jwtTokenDto);
 
     }
 

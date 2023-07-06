@@ -13,7 +13,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,9 +20,9 @@ import java.util.stream.Collectors;
 @Component
 public class JwtProvider {
     private static final Logger logger = LoggerFactory.getLogger(JwtEntryPoint.class);
-    @Value("${jwt.secret")
+    @Value("${jwt.secret}")
     private String secret;
-    @Value("${jwt.expiration")
+    @Value("${jwt.expiration}")
     private int expiration;
 
     public String generateToken(Authentication authentication) {
@@ -38,7 +37,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String getUserNameFromToken(String token) {
+    public String getUsernameFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(getKey(secret)).build().parseClaimsJws(token).getBody().getSubject();
     }
 

@@ -1,7 +1,7 @@
 package com.tutorial.crudmongoback.security.service;
 
 import com.tutorial.crudmongoback.security.entity.UserEntity;
-import com.tutorial.crudmongoback.security.repository.UserRepository;
+import com.tutorial.crudmongoback.security.repository.UserEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserDetailServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
-    UserRepository userRepository;
+    UserEntityRepository userEntityRepository;
     @Override
     //obtiene los usuarios de los documentos de mongo
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> userEntity=userRepository.findByUsernameOrEmail(username,username);
+        Optional<UserEntity> userEntity= userEntityRepository.findByUsernameOrEmail(username,username);
         if (!userEntity.isPresent())
             return null;
         return UserPrincipal.build(userEntity.get());
