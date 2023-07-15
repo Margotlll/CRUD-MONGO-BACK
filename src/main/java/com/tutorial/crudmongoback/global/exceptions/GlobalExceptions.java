@@ -4,12 +4,11 @@ import com.tutorial.crudmongoback.global.dto.MessageDto;
 import com.tutorial.crudmongoback.global.utils.Operations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +42,11 @@ public class GlobalExceptions {
             message.add(err.getDefaultMessage());
         });
         return ResponseEntity.badRequest().body(new MessageDto(HttpStatus.BAD_REQUEST, Operations.trimBrackets(message.toString())));
+
+    }
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<MessageDto> badCredentialException(BadCredentialsException e){
+       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageDto(HttpStatus.NOT_FOUND, "Bad credentialsss"));
 
     }
 
