@@ -18,7 +18,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(// securedEnabled = true,
+        // jsr250Enabled = true,
+
+        prePostEnabled = true)
 public class MainSecurityConfig  {
 
     @Autowired
@@ -33,20 +36,32 @@ public class MainSecurityConfig  {
     @Autowired
     JwtFilter jwtFilter;
 
+
     AuthenticationManager authenticationManager;
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
         builder.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder);
         authenticationManager = builder.build();
         http.authenticationManager(authenticationManager);
-        http.csrf(csrf -> csrf.disable());
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll().anyRequest().authenticated());
-        http.exceptionHandling(exception -> exception.authenticationEntryPoint(jwtEntryPoint));
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.csrf(csrf -> csrf.disable())
+                //.cors(Customizer.withDefaults())
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll().anyRequest().authenticated());
+
+
+
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+
         return http.build();
     }
+
 
 
 

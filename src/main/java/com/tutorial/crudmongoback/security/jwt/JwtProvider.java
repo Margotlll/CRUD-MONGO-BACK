@@ -26,12 +26,13 @@ public class JwtProvider {
     private int expiration;
 
     public String generateToken(Authentication authentication) {
+
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         return Jwts.builder()
                 .signWith(getKey(secret))
                 .setSubject(userPrincipal.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + expiration * 1000))
+                .setExpiration(new Date(new Date().getTime() + expiration * 1000L))
                 .claim("roles", getRoles(userPrincipal))
                 .claim("cara", "feísima")
                 .compact();
@@ -47,21 +48,20 @@ public class JwtProvider {
             Jwts.parserBuilder().setSigningKey(getKey(secret)).build().parseClaimsJws(token).getBody();
             return true;
         } catch (ExpiredJwtException e) {
-            logger.error("fail expiration");
-            ;
+            logger.error("expired token");
         } catch (UnsupportedJwtException e) {
-            logger.error("fail Unsupported");
+            logger.error("unsupported token");
         } catch (MalformedJwtException e) {
-            logger.error("fail Malformed");
+            logger.error("malformed token");
         } catch (SignatureException e) {
-            logger.error("fail Signature");
+            logger.error("bad signature");
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (Exception e) {
             logger.error("fail token");
         }
-
         return false;
+
     }
 
 

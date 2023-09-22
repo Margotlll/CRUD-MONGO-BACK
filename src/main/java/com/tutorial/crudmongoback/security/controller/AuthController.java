@@ -22,12 +22,26 @@ public class AuthController {
     @Autowired
     UserEntityService userEntityService;
     @PostMapping("/create")
-    public ResponseEntity<MessageDto> save(@Valid @RequestBody CreateUserDto createUserDto) throws AttributeException {
+    public ResponseEntity<MessageDto> create(@Valid @RequestBody CreateUserDto createUserDto) throws AttributeException {
        UserEntity userEntity;
         userEntity = userEntityService.create(createUserDto);
         String message="user "+userEntity.getUsername()+" has been saved";
         return ResponseEntity.ok(new MessageDto(HttpStatus.OK,message));
 
+    }
+    @PostMapping("/create-admin")
+    public ResponseEntity<MessageDto> createAdmin(@Valid @RequestBody CreateUserDto createUserDto) throws AttributeException {
+        UserEntity userEntity;
+        userEntity = userEntityService.createAdmin(createUserDto);
+        String message="user admin "+userEntity.getUsername()+" has been saved";
+        return ResponseEntity.ok(new MessageDto(HttpStatus.OK,message));
+    }
+    @PostMapping("/create-user")
+    public ResponseEntity<MessageDto> createUser(@Valid @RequestBody CreateUserDto createUserDto) throws AttributeException {
+        UserEntity userEntity;
+        userEntity = userEntityService.createUser(createUserDto);
+        String message="user admin "+userEntity.getUsername()+" has been saved";
+        return ResponseEntity.ok(new MessageDto(HttpStatus.OK,message));
     }
     @PostMapping("/login")
     public ResponseEntity<JwtTokenDto> login(@Valid @RequestBody LoginUserDto dto) throws AttributeException {

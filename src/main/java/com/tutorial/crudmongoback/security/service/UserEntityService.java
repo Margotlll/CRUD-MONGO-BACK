@@ -17,7 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,9 +31,7 @@ public class UserEntityService {
     JwtProvider jwtProvider;
     @Autowired
     AuthenticationManager authenticationManager;
-    public List<UserEntity> getAll(){
-        return userEntityRepository.findAll();
-    }
+
     public UserEntity create(CreateUserDto dto) throws AttributeException {
         if(userEntityRepository.existsByUsername(dto.getUsername())){
             throw new AttributeException("User name already in use");
@@ -41,8 +39,34 @@ public class UserEntityService {
         if(userEntityRepository.existsByEmail(dto.getEmail())){
             throw new AttributeException("Email already in use");
         }
-
+        if(dto.getRoles().isEmpty())
+            throw new AttributeException("Roles are mandatory");
         return userEntityRepository.save(mapUserFromDto(dto));
+    }
+    public UserEntity createAdmin(CreateUserDto dto) throws AttributeException {
+        if(userEntityRepository.existsByUsername(dto.getUsername())){
+            throw new AttributeException("User name already in use");
+        }
+        if(userEntityRepository.existsByEmail(dto.getEmail())){
+            throw new AttributeException("Email already in use");
+        }
+        List<String> roles= Arrays.asList("ROLE_ADMIN","ROLE_USER");
+        dto.setRoles(roles);
+        return userEntityRepository.save(mapUserFromDto(dto));
+
+    }
+    public UserEntity createUser(CreateUserDto dto) throws AttributeException {
+        if(userEntityRepository.existsByUsername(dto.getUsername())){
+            throw new AttributeException("User name already in use");
+        }
+        if(userEntityRepository.existsByEmail(dto.getEmail())){
+            throw new AttributeException("Email already in use");
+        }
+
+        List<String> roles= Arrays.asList("ROLE_USER");
+        dto.setRoles(roles);
+        return userEntityRepository.save(mapUserFromDto(dto));
+
     }
     public JwtTokenDto login(LoginUserDto dto){
         Authentication authentication=
@@ -51,14 +75,16 @@ public class UserEntityService {
         String token= jwtProvider.generateToken(authentication);
         return  new JwtTokenDto(token);
     }
-    private UserEntity mapUserFromDto(CreateUserDto dto){
-        int id= Operations.autoIncrement(userEntityRepository.findAll());
-        String password= passwordEncoder.encode(dto.getPassword());
-        //Convertir la Lista String del dto a tipo RolEnum
-        List<RoleEnum> roles= dto.getRoles().stream().map(rol -> RoleEnum.valueOf(rol)).collect(Collectors.toList());
-       return new UserEntity(id, dto.getUsername(), dto.getEmail(),password,roles);
 
+    // private methods
+    private UserEntity mapUserFromDto(CreateUserDto dto) {
+        int id = Operations.autoIncrement(userEntityRepository.findAll());
+        String password = passwordEncoder.encode(dto.getPassword());
+        List<RoleEnum> roles =
+                dto.getRoles().stream().map(rol -> RoleEnum.valueOf(rol)).collect(Collectors.toList());
+        return new UserEntity(id, dto.getUsername(), dto.getEmail(), password, roles);
     }
+
 
 
 

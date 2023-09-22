@@ -27,5 +27,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
         res.getWriter().write(new ObjectMapper().writeValueAsString(dto));
         res.getWriter().flush();
         res.getWriter().close();
+
     }
+
 }

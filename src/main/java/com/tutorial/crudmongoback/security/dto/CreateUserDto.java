@@ -2,8 +2,8 @@ package com.tutorial.crudmongoback.security.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CreateUserDto {
@@ -15,8 +15,8 @@ public class CreateUserDto {
     @NotBlank(message = "Password is mandatory")
     private  String password;
 
-    @NotEmpty(message = "role are mandatory")
-    List<String> roles;
+    //@NotEmpty(message = "role are mandatory")
+    List<String> roles= new ArrayList<>();
 
     public CreateUserDto() {
     }
