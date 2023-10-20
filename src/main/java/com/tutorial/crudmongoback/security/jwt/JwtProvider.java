@@ -22,8 +22,10 @@ public class JwtProvider {
     private static final Logger logger = LoggerFactory.getLogger(JwtEntryPoint.class);
     @Value("${jwt.secret}")
     private String secret;
+
     @Value("${jwt.expiration}")
     private int expiration;
+
 
     public String generateToken(Authentication authentication) {
 
@@ -32,7 +34,7 @@ public class JwtProvider {
                 .signWith(getKey(secret))
                 .setSubject(userPrincipal.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + expiration * 1000L))
+                .setExpiration(new Date(new Date().getTime() + expiration * 1000))
                 .claim("roles", getRoles(userPrincipal))
                 .claim("cara", "feísima")
                 .compact();

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -47,20 +48,20 @@ public class MainSecurityConfig  {
         builder.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder);
         authenticationManager = builder.build();
         http.authenticationManager(authenticationManager);
-
         http.csrf(csrf -> csrf.disable())
-                //.cors(Customizer.withDefaults())
+                .cors(Customizer.withDefaults())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll().anyRequest().authenticated());
-
-
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
 
         return http.build();
+
     }
+
+
 
 
 
